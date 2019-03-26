@@ -34,7 +34,7 @@ install_java() {
 	local versionstr=$1
 	local destdir=$2
 
-	IFS=- read distro version <<< $versionstr
+	IFS=- read distro version <<<$versionstr
 
 	local variant=$(get_variant $distro)
 	[[ -z "$ASDF_JAVA_ERROR" ]] || return
@@ -50,33 +50,38 @@ install_java() {
 get_variant() {
 	local distro=$1
 	case "$(uname -s)" in
-		Linux)
-			case "$(uname -m)" in
-				x86_64)
-					case $distro in
-						oracle) echo linux-x64.tar.gz ;;
-						openjdk) echo linux-x64_bin.tar.gz ;;
-						*) ;;
-					esac ;;
-				i[[3-9]]86)
-					case $distro in
-						oracle) echo linux-i586.tar.gz ;;
-						openjdk) echo linux-i586_bin.tar.gz ;;
-						*) ;;
-					esac ;;
-				*) ASDF_JAVA_ERROR="$(uname -m) is not supported on linux" ;;
-			esac ;;
-		Darwin)
-			case "$(uname -m)" in
-				x86_64)
-					case $distro in
-						oracle) echo macosx-x64.dmg ;;
-						openjdk) echo osx-x64_bin.tar.gz ;;
-						*) ;;
-					esac ;;
-				*) ASDF_JAVA_ERROR="$(uname -m) is not supported on MacOS" ;;
-			esac ;;
-		*) ASDF_JAVA_ERROR="$(uname -s) is not supported" ;;
+	Linux)
+		case "$(uname -m)" in
+		x86_64)
+			case $distro in
+			oracle) echo linux-x64.tar.gz ;;
+			openjdk) echo linux-x64_bin.tar.gz ;;
+			*) ;;
+			esac
+			;;
+		i[[3-9]]86)
+			case $distro in
+			oracle) echo linux-i586.tar.gz ;;
+			openjdk) echo linux-i586_bin.tar.gz ;;
+			*) ;;
+			esac
+			;;
+		*) ASDF_JAVA_ERROR="$(uname -m) is not supported on linux" ;;
+		esac
+		;;
+	Darwin)
+		case "$(uname -m)" in
+		x86_64)
+			case $distro in
+			oracle) echo macosx-x64.dmg ;;
+			openjdk) echo osx-x64_bin.tar.gz ;;
+			*) ;;
+			esac
+			;;
+		*) ASDF_JAVA_ERROR="$(uname -m) is not supported on MacOS" ;;
+		esac
+		;;
+	*) ASDF_JAVA_ERROR="$(uname -s) is not supported" ;;
 	esac
 }
 
@@ -97,9 +102,9 @@ get_current_variant() {
 get_base_url() {
 	local distro=$1
 	case $distro in
-		oracle) echo "http://download.oracle.com/otn-pub/java/jdk/" ;;
-		openjdk) echo "https://download.java.net/java/GA/jdk" ;;
-		*) ;;
+	oracle) echo "http://download.oracle.com/otn-pub/java/jdk/" ;;
+	openjdk) echo "https://download.java.net/java/GA/jdk" ;;
+	*) ;;
 	esac
 }
 
@@ -114,16 +119,16 @@ get_java() {
 	local oracle8_version=$(echo $version | sed -e 's|\.|u|g')
 
 	case $distro-$version in
-		oracle-11.0.1) url=$base$version+13/90cf5d8f270a4347a95050320eef3fb7/jdk-$version'_'$(get_current_variant $variant) ;;
-		oracle-8.191)  url=$base$oracle8_version-b12/2787e4a523244c269598db4e85c51e0c/jdk-$oracle8_version-$variant ;;
-		oracle-8.141)  url=$base$oracle8_version-b15/336fa29ff2bb4ef291e347e091f7f4a7/jdk-$oracle8_version-$variant ;;
-		oracle-8.131)  url=$base$oracle8_version-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-$oracle8_version-$variant ;;
+	oracle-11.0.1) url=$base$version+13/90cf5d8f270a4347a95050320eef3fb7/jdk-$version'_'$(get_current_variant $variant) ;;
+	oracle-8.191) url=$base$oracle8_version-b12/2787e4a523244c269598db4e85c51e0c/jdk-$oracle8_version-$variant ;;
+	oracle-8.141) url=$base$oracle8_version-b15/336fa29ff2bb4ef291e347e091f7f4a7/jdk-$oracle8_version-$variant ;;
+	oracle-8.131) url=$base$oracle8_version-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-$oracle8_version-$variant ;;
 
-		openjdk-11.0.1) url=${base}11/13/GPL/openjdk-11.0.1_$variant ;;
-		openjdk-11)     url=${base/\/GA\//\/ga\/}11/openjdk-11_$variant ;;
-		openjdk-10.0.2) url=$base'10'/$version/19aef61b38124481863b1413dce1855f/13/openjdk-$version'_'$variant ;;
+	openjdk-11.0.1) url=${base}11/13/GPL/openjdk-11.0.1_$variant ;;
+	openjdk-11) url=${base/\/GA\//\/ga\/}11/openjdk-11_$variant ;;
+	openjdk-10.0.2) url=$base'10'/$version/19aef61b38124481863b1413dce1855f/13/openjdk-$version'_'$variant ;;
 
-		*) ASDF_JAVA_ERROR="$version is not a supported version" ;;
+	*) ASDF_JAVA_ERROR="$version is not a supported version" ;;
 	esac
 	[[ -z "$ASDF_JAVA_ERROR" ]] || return
 
@@ -146,9 +151,9 @@ unpack_java() {
 	log_info expanding java dist
 
 	case $variant in
-		*.tar.gz) unpack_tar $variant $destdir ;;
-		*.dmg)    unpack_dmg $variant $destdir ;;
-		*) ASDF_JAVA_ERROR="$variant is not supported" ;;
+	*.tar.gz) unpack_tar $variant $destdir ;;
+	*.dmg) unpack_dmg $variant $destdir ;;
+	*) ASDF_JAVA_ERROR="$variant is not supported" ;;
 	esac
 }
 
@@ -163,7 +168,8 @@ unpack_tar() {
 	local destdir=$2
 
 	local origin=$(pwd)
-	cd $destdir; {
+	cd $destdir
+	{
 		tar -xzf $variant
 		[[ $? == 0 ]] || ASDF_JAVA_ERROR="expanding java dist"
 		rm $variant
@@ -175,7 +181,8 @@ unpack_tar() {
 			mv $pkg/* .
 		fi
 		rmdir $pkg
-	}; cd $origin
+	}
+	cd $origin
 }
 
 # Unarchive a tar archive into the install directory and cleanup.
@@ -189,7 +196,8 @@ unpack_dmg() {
 	local destdir=$2
 
 	local origin=$(pwd)
-	cd $destdir; {
+	cd $destdir
+	{
 		local pkgdir=$destdir/asdf_tmp_pkgdir
 		local imgdir=$destdir/asdf_tmp_imgdir
 
@@ -203,17 +211,20 @@ unpack_dmg() {
 			return
 		fi
 
-		cd $pkgdir/jdk*.pkg; {
+		cd $pkgdir/jdk*.pkg
+		{
 			cat Payload | gzip -d | cpio -i
 			if [[ $? != 0 ]] || ! [[ -d Contents ]]; then
 				ASDF_JAVA_ERROR="demangling dist payload"
 			fi
 			mv Contents/Home/* $destdir/
-		}; cd $destdir
+		}
+		cd $destdir
 
 		unmount_dmg $imgdir
 		rm -r $destdir/$variant
-	}; cd $origin
+	}
+	cd $origin
 }
 
 mount_dmg() {
@@ -229,7 +240,7 @@ unmount_dmg() {
 
 	hdiutil unmount -quiet $dir
 	if [[ $? != 0 ]]; then
-		[[ -z "$ASDF_JAVA_ERROR" ]] || \
+		[[ -z "$ASDF_JAVA_ERROR" ]] ||
 			ASDF_JAVA_ERROR="unmounting java dist"
 
 		log_warning "The java dist is still mounted at $dir."
